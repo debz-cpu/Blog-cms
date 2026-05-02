@@ -1,0 +1,4 @@
+->add('imageFile', FileType::class, [
+    'mapped' => false,
+    'required' => false,
+])

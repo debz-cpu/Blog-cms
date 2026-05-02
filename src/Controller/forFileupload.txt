@@ -1,0 +1,40 @@
+🎮 STEP 6 — Handle Upload in Controller
+
+Example for Post creation:
+
+public function new(
+    Request $request,
+    EntityManagerInterface $em,
+    FileUploader $fileUploader
+): Response {
+
+    $post = new Post();
+    $form = $this->createForm(PostType::class, $post);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+
+        $file = $form->get('imageFile')->getData();
+
+        if ($file) {
+            $fileName = $fileUploader->upload($file);
+            $post->setImage($fileName);
+        }
+
+        $post->setUser($this->getUser());
+        $post->setCreatedAt(new \DateTime());
+
+        $em->persist($post);
+        $em->flush();
+
+        return $this->redirectToRoute('post_index');
+    }
+
+    return $this->render('post/new.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+
+🖼️ STEP 7 — Display Image in Twig
+<img src="{{ asset('uploads/posts/' ~ post.image) }}" alt="post image">
