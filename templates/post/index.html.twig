@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog CMS{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Latest Posts</h1>
+        {% if app.user %}
+            <a class="btn btn-primary" href="{{ path('post_new') }}">Create Post</a>
+        {% else %}
+            <a class="btn btn-outline-primary" href="{{ path('app_login') }}">Sign in to post</a>
+        {% endif %}
+    </div>
+
+    {% if posts is empty %}
+        <div class="alert alert-info mb-0">No posts yet. Create the first one.</div>
+    {% else %}
+        <div class="row g-4">
+            {% for post in posts %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <article class="card h-100 shadow-sm">
+                        {% if post.image %}
+                            <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h2 class="h5 card-title">{{ post.title }}</h2>
+                            <p class="text-muted small mb-2">By {{ post.user.email }} on {{ post.createdAt|date('Y-m-d H:i') }}</p>
+                            <p class="card-text mb-3">{{ post.content|slice(0, 140) ~ (post.content|length > 140 ? '...' : '') }}</p>
+                            <a class="btn btn-sm btn-outline-secondary mt-auto" href="{{ path('post_show', {id: post.id}) }}">Read more</a>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

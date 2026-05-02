@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 760px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Create New Post</h1>
+        <a class="btn btn-outline-secondary btn-sm" href="{{ path('post_index') }}">Back to posts</a>
+    </div>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.imageFile) }}
+        <button class="btn btn-primary" type="submit">Publish</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
