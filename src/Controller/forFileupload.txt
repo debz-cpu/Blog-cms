@@ -38,3 +38,25 @@ public function new(
 
 🖼️ STEP 7 — Display Image in Twig
 <img src="{{ asset('uploads/posts/' ~ post.image) }}" alt="post image">
+
+
+
+
+💬 STEP 4 — Comment Logic
+
+In Post show page controller:
+
+$comment = new Comment();
+$form = $this->createForm(CommentType::class, $comment);
+$form->handleRequest($request);
+
+if ($form->isSubmitted() && $form->isValid()) {
+
+    $comment->setUser($this->getUser());
+    $comment->setPost($post);
+    $comment->setCreatedAt(new \DateTime());
+    $comment->setIsApproved(false);
+
+    $em->persist($comment);
+    $em->flush();
+}

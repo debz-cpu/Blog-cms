@@ -36,8 +36,12 @@ security:
     # 🔒 Access control (who can access what)
     access_control:
         # allow public pages
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/posts$, roles: PUBLIC_ACCESS }
+        - { path: ^/post/\d+$, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/verify/email, roles: PUBLIC_ACCESS }
 
         # protect everything else
         - { path: ^/, roles: ROLE_USER }
