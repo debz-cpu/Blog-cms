@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edit Profile{% endblock %}
+{% block body %}
+<div class="container py-4" style="max-width:500px">
+    <h1 class="h4 mb-3">Edit Profile</h1>
+    {% if user.profilePicture %}
+        <div class="mb-3 text-center">
+            <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" alt="{{ user.email }}" class="rounded-circle border" width="120" height="120" style="object-fit: cover;">
+        </div>
+    {% endif %}
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        {{ form_row(form.profilePictureFile) }}
+        <button class="btn btn-primary" type="submit">Save</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

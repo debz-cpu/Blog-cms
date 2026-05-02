@@ -5,7 +5,12 @@
 {% block body %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Latest Posts</h1>
+        <div>
+            <h1 class="h3 mb-0">Latest Posts</h1>
+            {% if searchTerm is not empty %}
+                <p class="text-muted mb-0">Results for "{{ searchTerm }}"</p>
+            {% endif %}
+        </div>
         {% if app.user %}
             <a class="btn btn-primary" href="{{ path('post_new') }}">Create Post</a>
         {% else %}
@@ -14,7 +19,13 @@
     </div>
 
     {% if posts is empty %}
-        <div class="alert alert-info mb-0">No posts yet. Create the first one.</div>
+        <div class="alert alert-info mb-0">
+            {% if searchTerm is not empty %}
+                No posts matched your search.
+            {% else %}
+                No posts yet. Create the first one.
+            {% endif %}
+        </div>
     {% else %}
         <div class="row g-4">
             {% for post in posts %}

@@ -10,23 +10,32 @@
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
     </head>
     <body>
         <nav class="navbar navbar-expand-lg bg-light border-bottom">
             <div class="container">
                 <a class="navbar-brand" href="{{ path('app_home') }}">Blog CMS</a>
-                <div class="d-flex gap-2 ms-auto">
+
+                <form class="d-flex ms-lg-4 me-auto" method="get" action="{{ path('post_index') }}" role="search">
+                    <input class="form-control me-2" type="search" name="q" value="{{ app.request.query.get('q') }}" placeholder="Search posts" aria-label="Search posts"/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+
+                <div class="d-flex gap-2 ms-auto align-items-center">
                     {% if app.user %}
+                        <a class="text-decoration-none text-dark d-inline-flex align-items-center gap-2" href="{{ path('profile_edit') }}">
+                            {% if app.user.profilePicture %}
+                                <img src="{{ asset('uploads/profiles/' ~ app.user.profilePicture) }}" alt="{{ app.user.email }}" class="rounded-circle border" width="36" height="36" style="object-fit: cover;">
+                            {% else %}
+                                <span class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center" style="width:36px;height:36px">
+                                    {{ app.user.email|first|upper }}
+                                </span>
+                            {% endif %}
+                            <span class="small d-none d-md-inline">{{ app.user.email }}</span>
+                        </a>
                         <a class="btn btn-sm btn-outline-primary" href="{{ path('post_new') }}">New Post</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('profile_edit') }}">Profile</a>
                         <a class="btn btn-sm btn-outline-danger" href="{{ path('app_logout') }}">Logout</a>
                     {% else %}
                         <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_login') }}">Login</a>

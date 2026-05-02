@@ -3,6 +3,8 @@ doctrine_migrations:
         # namespace is arbitrary but should be different from App\Migrations
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
+    services:
+        'Doctrine\Migrations\Metadata\Storage\MetadataStorage': 'App\Migration\LenientMetadataStorage'
     storage:
         table_storage:
             table_name: 'doctrine_migration_versions'

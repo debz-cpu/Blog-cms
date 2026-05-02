@@ -16,13 +16,15 @@ class FileUploader
         $this->slugger = $slugger;
      }
 
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file, ?string $targetDirectory = null)
     {        
         $og_Filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safe_Filename = $this->slugger->slug($og_Filename);
         $final_fileName = $safe_Filename.'-'.uniqid().'.'.$file->guessExtension();
+        $directory = $targetDirectory ?? $this->getTargetDirectory();
+
         try {
-            $file->move($this->getTargetDirectory(), $final_fileName);
+            $file->move($directory, $final_fileName);
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
             // redirect('upload_error');

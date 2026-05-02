@@ -19,10 +19,16 @@ class PostController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     #[Route('/posts', name: 'post_index')]
-    public function index(PostRepository $postRepository): Response
+    public function index(Request $request, PostRepository $postRepository): Response
     {
+        $query = trim((string) $request->query->get('q', ''));
+        $posts = $query === ''
+            ? $postRepository->findLatest()
+            : $postRepository->searchByTitleOrContent($query);
+
         return $this->render('post/index.html.twig', [
-            'posts' => $postRepository->findAll(),
+            'posts' => $posts,
+            'searchTerm' => $query,
         ]);
     }
 
@@ -97,6 +103,39 @@ class PostController extends AbstractController
 
         return $this->render('post/new.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/post/{id}/edit', name: 'post_edit', requirements: ['id' => '\\d+'])]
+    public function edit(Post $post, Request $request, EntityManagerInterface $em, FileUploader $fileUploader): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        if ($post->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You can only edit your own posts.');
+        }
+
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('imageFile')->getData();
+
+            if ($file) {
+                $fileName = $fileUploader->upload($file);
+                $post->setImage($fileName);
+            }
+
+            $post->setUpdatedAt(new \DateTime());
+
+            $em->flush();
+
+            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+        }
+
+        return $this->render('post/edit.html.twig', [
+            'form' => $form->createView(),
+            'post' => $post,
         ]);
     }
 }

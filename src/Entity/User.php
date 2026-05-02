@@ -32,6 +32,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ['default' => false])]
     private bool $isVerified = false;
 
+    #[ORM\Column(length: 125, nullable: true)]
+    private ?string $profilePicture = null;
+
     /**
      * @var Collection<int, Post>
      */
@@ -48,6 +51,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(?string $profilePicture): static
+    {
+        $this->profilePicture = $profilePicture;
+        return $this;
     }
 
     public function getId(): ?int
